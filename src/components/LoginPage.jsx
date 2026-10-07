@@ -78,11 +78,11 @@ export default function LoginPage() {
               <Mail size={14} /> Email Address / Username
             </label>
             <input
-              type="email"
+              type="text"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. admin@truexinsulation.com"
+              placeholder="e.g. truexadmin"
               className="w-full bg-black border-2 border-zinc-700 focus:border-lime-400 focus:ring-4 focus:ring-lime-500/20 rounded-2xl px-4 py-3.5 text-white text-base font-semibold placeholder:text-zinc-600 transition"
             />
           </div>

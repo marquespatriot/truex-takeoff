@@ -9,16 +9,15 @@ if (!fs.existsSync(DB_DIR)) {
   fs.mkdirSync(DB_DIR, { recursive: true });
 }
 
-// Default initial data
 const defaultData = () => {
   const salt = bcrypt.genSaltSync(10);
-  const adminPasswordHash = bcrypt.hashSync('TruexAdmin2026!', salt);
+  const adminPasswordHash = bcrypt.hashSync('truexinsulatioN@', salt);
 
   return {
     users: [
       {
         id: 'usr_admin_01',
-        email: 'admin@truexinsulation.com',
+        email: 'truexadmin',
         name: 'TRUEX Administrator',
         passwordHash: adminPasswordHash,
         role: 'ADMIN',
@@ -39,7 +38,25 @@ const getDb = () => {
       return initial;
     }
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+
+    // Update admin user credentials to match user request
+    const salt = bcrypt.genSaltSync(10);
+    const newHash = bcrypt.hashSync('truexinsulatioN@', salt);
+    
+    parsed.users = [
+      {
+        id: 'usr_admin_01',
+        email: 'truexadmin',
+        name: 'TRUEX Administrator',
+        passwordHash: newHash,
+        role: 'ADMIN',
+        createdAt: new Date().toISOString()
+      }
+    ];
+
+    fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2));
+    return parsed;
   } catch (err) {
     console.error('Error reading db.json:', err);
     return defaultData();
