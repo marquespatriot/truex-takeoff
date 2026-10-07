@@ -1,0 +1,15 @@
+{
+  "users": [
+    {
+      "id": "usr_admin_01",
+      "email": "admin@truexinsulation.com",
+      "name": "TRUEX Administrator",
+      "passwordHash": "$2b$10$PQ1zcu45jgfLruKgOQbP2.ejGBw1l39MiWlD82npWfT3Lbp2Q/xda",
+      "role": "ADMIN",
+      "createdAt": "2026-10-07T21:43:17.675Z"
+    }
+  ],
+  "projects": [],
+  "failedAttempts": {},
+  "resetTokens": []
+}
