@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import bcrypt from 'bcryptjs';
 
 const AuthContext = createContext();
 
@@ -12,32 +11,35 @@ export function AuthProvider({ children }) {
 
   // Check stored session on mount
   useEffect(() => {
-    const storedToken = localStorage.getItem('truex_auth_token') || sessionStorage.getItem('truex_auth_token');
-    const storedUser = localStorage.getItem('truex_auth_user') || sessionStorage.getItem('truex_auth_user');
+    try {
+      const storedToken = localStorage.getItem('truex_auth_token') || sessionStorage.getItem('truex_auth_token');
+      const storedUser = localStorage.getItem('truex_auth_user') || sessionStorage.getItem('truex_auth_user');
 
-    if (storedToken && storedUser) {
-      try {
+      if (storedToken && storedUser) {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
-      } catch (err) {
-        console.error('Error parsing stored user:', err);
-        clearAuthStorage();
       }
+    } catch (err) {
+      console.warn('Error reading stored session:', err);
+      clearAuthStorage();
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   const clearAuthStorage = () => {
-    localStorage.removeItem('truex_auth_token');
-    localStorage.removeItem('truex_auth_user');
-    sessionStorage.removeItem('truex_auth_token');
-    sessionStorage.removeItem('truex_auth_user');
+    try {
+      localStorage.removeItem('truex_auth_token');
+      localStorage.removeItem('truex_auth_user');
+      sessionStorage.removeItem('truex_auth_token');
+      sessionStorage.removeItem('truex_auth_user');
+    } catch (e) {}
   };
 
   const login = async (email, password, rememberMe = false) => {
     const cleanInput = (email || '').toLowerCase().trim();
-    
-    // Server API Auth call
+
+    // 1. Try server API login
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
@@ -58,10 +60,10 @@ export function AuthProvider({ children }) {
         return { success: true };
       }
     } catch (err) {
-      console.warn('Server API auth unreachable, checking client authentication fallback:', err);
+      console.warn('Network server login fallback to client check:', err);
     }
 
-    // Direct Auth Fallback for truexadmin / truexinsulatioN@
+    // 2. Mobile / Client Authentication Fallback
     const validUsernames = ['truexadmin', 'truexadmin@truexinsulation.com', 'admin@truexinsulation.com'];
     const isValidUsername = validUsernames.includes(cleanInput);
     const isValidPassword = password === 'truexinsulatioN@' || password === 'TruexAdmin2026!';
@@ -93,7 +95,6 @@ export function AuthProvider({ children }) {
     clearAuthStorage();
     setUser(null);
     setToken(null);
-    window.location.hash = '#/login';
   };
 
   const forgotPassword = async (email) => {

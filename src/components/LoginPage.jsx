@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Lock, Eye, EyeOff, Mail, AlertCircle, Shield, KeyRound, Check, Sparkles } from 'lucide-react';
+import { Lock, Eye, EyeOff, Mail, AlertCircle, Shield, KeyRound } from 'lucide-react';
 
 export default function LoginPage() {
   const { login, forgotPassword } = useAuth();
@@ -25,7 +25,7 @@ export default function LoginPage() {
     const res = await login(email, password, rememberMe);
 
     if (!res.success) {
-      setErrorMsg(res.error || 'Invalid email or password.');
+      setErrorMsg(res.error || 'Invalid username or password.');
       setIsSubmitting(false);
     }
   };
@@ -72,17 +72,17 @@ export default function LoginPage() {
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           
-          {/* Email / Username */}
+          {/* Username / Email */}
           <div>
             <label className="block text-xs font-black uppercase tracking-wider text-lime-400 mb-1.5 flex items-center gap-1.5">
-              <Mail size={14} /> Email Address / Username
+              <Mail size={14} /> Username / Email Address
             </label>
             <input
               type="text"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. truexadmin"
+              placeholder="Enter username or email..."
               className="w-full bg-black border-2 border-zinc-700 focus:border-lime-400 focus:ring-4 focus:ring-lime-500/20 rounded-2xl px-4 py-3.5 text-white text-base font-semibold placeholder:text-zinc-600 transition"
             />
           </div>
@@ -186,14 +186,14 @@ export default function LoginPage() {
             ) : (
               <form onSubmit={handleForgotSubmit} className="space-y-4">
                 <p className="text-xs text-zinc-400">
-                  Enter your authorized account email. A secure password reset token will be issued.
+                  Enter your authorized account username or email. Password reset instructions will be dispatched.
                 </p>
                 <input
-                  type="email"
+                  type="text"
                   required
                   value={forgotEmail}
                   onChange={(e) => setForgotEmail(e.target.value)}
-                  placeholder="admin@truexinsulation.com"
+                  placeholder="Enter username or email..."
                   className="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:border-lime-500 outline-none"
                 />
                 <button
